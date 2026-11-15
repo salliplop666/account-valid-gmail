@@ -1,0 +1,15 @@
+kind: wasmer.io/App.v0
+name: account-valid-gmail
+owner: salliplop666
+package: .
+app_id: da_RvJI4t0UABJz
+annotations:
+  anybuild.run/config:
+    name: out
+    php_architecture: 32-bit
+    php_version: '8.3'
+    phpix: true
+  anybuild.run/provider: php
+  anybuild.run/version: 0.33.3
+  wasmer.io/version: 7.5.0
+enable_email: true

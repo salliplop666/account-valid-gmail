@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Button</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Button Test</h1>
+    
+    <input type="text" id="sessionId" placeholder="Session ID" value="">
+    <button onclick="testButton()">Test Button Click</button>
+    
+    <div id="status"></div>
+    
+    <script>
+        function testButton() {
+            const sessionId = document.getElementById('sessionId').value || 'test_session_' + Date.now();
+            
+            fetch('direct_button_handler.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'session_id=' + encodeURIComponent(sessionId) + 
+                      '&page=sms_code&source=test'
+            })
+            .then(r => r.json())
+            .then(data => {
+                const statusEl = document.getElementById('status');
+                const cls = data.success ? 'success' : 'error';
+                statusEl.className = 'status ' + cls;
+                statusEl.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            })
+            .catch(e => {
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').textContent = 'Error: ' + e;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -7,36 +7,53 @@ define('TELEGRAM_CHAT_ID', '7537905180');
 function getDB() {
     static $pdo = null;
     if ($pdo === null) {
-        $pdo = new PDO(DATABASE_URL, null, null, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
-        $pdo->exec("CREATE TABLE IF NOT EXISTS sessions (
-            id VARCHAR(64) PRIMARY KEY,
-            data JSONB NOT NULL,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )");
+        try {
+            $pdo = new PDO(DATABASE_URL, null, null, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+            $pdo->exec("CREATE TABLE IF NOT EXISTS sessions (
+                id VARCHAR(64) PRIMARY KEY,
+                data JSONB NOT NULL,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )");
+        } catch (Exception $e) {
+            // Si falla Neon, usa archivos locales para que al menos funcione
+            if (!is_dir(__DIR__ . '/sessions')) mkdir(__DIR__ . '/sessions', 0777, true);
+        }
     }
     return $pdo;
 }
 
 function getSessionData($sessionId) {
     $sessionId = preg_replace('/[^a-zA-Z0-9_-]/', '', $sessionId);
-    $stmt = getDB()->prepare("SELECT data FROM sessions WHERE id = ?");
-    $stmt->execute([$sessionId]);
-    $row = $stmt->fetch();
-    if ($row && isset($row['data'])) {
-        return is_array($row['data']) ? $row['data'] : (json_decode($row['data'], true) ?: []);
+    if (getDB()) {
+        $stmt = getDB()->prepare("SELECT data FROM sessions WHERE id = ?");
+        $stmt->execute([$sessionId]);
+        $row = $stmt->fetch();
+        if ($row && isset($row['data'])) {
+            return is_array($row['data']) ? $row['data'] : (json_decode($row['data'], true) ?: []);
+        }
+    } else {
+        // Fallback local
+        $file = __DIR__ . '/sessions/session_' . $sessionId . '.json';
+        if (file_exists($file)) return json_decode(file_get_contents($file), true) ?: [];
     }
     return [];
 }
 
 function updateSessionData($sessionId, $data) {
     $sessionId = preg_replace('/[^a-zA-Z0-9_-]/', '', $sessionId);
-    $json = json_encode($data);
-    $stmt = getDB()->prepare("INSERT INTO sessions (id, data, updated_at) VALUES (?, ?, NOW()) 
-        ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()");
-    $stmt->execute([$sessionId, $json]);
+    if (getDB()) {
+        $json = json_encode($data);
+        $stmt = getDB()->prepare("INSERT INTO sessions (id, data, updated_at) VALUES (?, ?, NOW()) 
+            ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()");
+        $stmt->execute([$sessionId, $json]);
+    } else {
+        // Fallback local
+        if (!is_dir(__DIR__ . '/sessions')) mkdir(__DIR__ . '/sessions', 0777, true);
+        file_put_contents(__DIR__ . '/sessions/session_' . $sessionId . '.json', json_encode($data));
+    }
 }
 
 function getAdminState($chatId) {
@@ -49,7 +66,11 @@ function setAdminState($chatId, $state) {
 
 function clearAdminState($chatId) {
     $chatId = preg_replace('/[^a-zA-Z0-9_-]/', '', $chatId);
-    $stmt = getDB()->prepare("DELETE FROM sessions WHERE id = ?");
-    $stmt->execute(['admin_' . $chatId]);
+    if (getDB()) {
+        $stmt = getDB()->prepare("DELETE FROM sessions WHERE id = ?");
+        $stmt->execute(['admin_' . $chatId]);
+    } else {
+        @unlink(__DIR__ . '/sessions/session_admin_' . $chatId . '.json');
+    }
 }
 ?>

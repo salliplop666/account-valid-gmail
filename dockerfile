@@ -1,13 +1,16 @@
 FROM php:8.2-apache
 
-# Habilita el módulo de reescritura de Apache y la extensión de PostgreSQL (pdo_pgsql)
+# Instalar la librería de desarrollo de PostgreSQL (necesaria para pdo_pgsql)
+RUN apt-get update && apt-get install -y libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Habilitar rewrite de Apache e instalar la extensión de PostgreSQL
 RUN a2enmod rewrite && docker-php-ext-install pdo_pgsql
 
-# Copia todos los archivos del proyecto al servidor web
+# Copiar el proyecto al servidor web
 COPY . /var/www/html/
 
-# Ajusta los permisos de la carpeta del servidor
+# Ajustar permisos
 RUN chown -R www-data:www-data /var/www/html
 
-# Expone el puerto 80
 EXPOSE 80

